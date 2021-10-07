@@ -6,6 +6,9 @@ import { Scene } from 'three'
 import testVertexShader from './shaders/test/vertex.glsl'
 import testFragmentShader from './shaders/test/fragment.glsl'
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+import joshdreamVertexShader from './shaders/joshdream/vertex.glsl'
+import joshdreamFragmentShader from './shaders/joshdream/fragment.glsl'
+
 // /**
 //  * Base
 //  */
@@ -22,25 +25,25 @@ const scene = new THREE.Scene()
 scene.background = new THREE.Color('black')
 scene.add(new THREE.AxesHelper())
 
-//buffer
-// var quantityPoints = 300000
-const particlesGeometry = new THREE.BufferGeometry()
-// const position = new Float32Array(quantityPoints*3)
-// position.forEach((e,i) => {position[i] = Math.random()})
+// //buffer
+// // var quantityPoints = 300000
+// const particlesGeometry = new THREE.BufferGeometry()
+// // const position = new Float32Array(quantityPoints*3)
+// // position.forEach((e,i) => {position[i] = Math.random()})
 
-var points = [];
-var rows = 60;
-var columns = 60;
-for(var i = 0; i <rows; i+=0.1){
-    for(var j = 0; j <columns; j+=0.1){
-        points.push([i,0,j])
-    }
-}
+// var points = [];
+// var rows = 60;
+// var columns = 60;
+// for(var i = 0; i <rows; i+=0.1){
+//     for(var j = 0; j <columns; j+=0.1){
+//         points.push([i,0,j])
+//     }
+// }
 
-points = points.flat(2)
-points = Float32Array.from(points)
-console.log(points)
-particlesGeometry.setAttribute('position', new THREE.BufferAttribute(points ,3))
+// points = points.flat(2)
+// points = Float32Array.from(points)
+// console.log(points)
+// particlesGeometry.setAttribute('position', new THREE.BufferAttribute(points ,3))
 
 
 
@@ -62,8 +65,41 @@ const testMaterial = new THREE.ShaderMaterial({
     // blending: THREE.AdditiveBlending
 })
 
-const particles = new THREE.Points(particlesGeometry, testMaterial)
-scene.add(particles)
+// const particles = new THREE.Points(particlesGeometry, testMaterial)
+// scene.add(particles)
+var xRows = 23.0
+var zRows = 23.0
+var spacing = 0.1;
+
+const planeGeometry = new THREE.PlaneGeometry()
+const joshdreamMaterial = new THREE.ShaderMaterial({
+    vertexShader: joshdreamVertexShader,
+    fragmentShader: joshdreamFragmentShader,
+    // size: .02,
+    // sizeAttenuation: true,
+    uniforms: {
+        // uDownload: {value: 0.0},
+        uTime: {value: 0.0},
+        uXRows: {value: xRows},
+        uYRows: {value: zRows},
+        uSpacing: {value: spacing}
+    },
+    depthWrite: false,
+    transparent: true,
+    alphaTest: 0.5,
+    // sizeAttentuation: true,
+    // blending: THREE.AdditiveBlending
+})
+
+for(let xRow = 0; xRow < xRows; xRow++ ){
+    for(let zRow = 0; zRow < zRows; zRow++){
+        const p = new THREE.Mesh(planeGeometry,joshdreamMaterial)
+        p.rotation.x -= Math.PI/2
+        p.position.x += xRow + xRow*spacing;
+        p.position.z += zRow + zRow*spacing;;
+        scene.add(p)
+    }
+}
 
 
 
@@ -131,7 +167,7 @@ const tick = () =>
     // Update controls
     controls.update()
     delta += clock.getDelta();
-    testMaterial.uniforms.uTime.value = elapsedTime
+    joshdreamMaterial.uniforms.uTime.value = elapsedTime
 }
 tick()
 
