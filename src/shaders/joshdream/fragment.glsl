@@ -1,4 +1,6 @@
 uniform float uTime;
+uniform float uXRows;
+uniform float uYRows;
 varying vec3 vPosition;
 
 float random (in vec2 st) {
@@ -46,6 +48,53 @@ float random (in vec2 st) {
     }
 
 void main() {
-    vec3 color = vec3(1.0,1.0,1.0);
+    // vec2 st = gl_FragCoord.xy/u_resolution.xy;
+    vec2 st = vPosition.xz/50.0;
+    // st.x *= u_resolution.x/u_resolution.y;
+    vec3 color = vec3(0.0);
+    // determines size
+    
+    
+    vec2 p = st*3.;
+
+    float circleRadius = 0.40;
+    float circleWidth = 0.01;
+    float rbDiff = 0.40;
+    float circleBrightnessBump = 0.05;
+
+
+    // // river flow strength
+    p.x += uTime * 0.001;
+    // p.x -= uTime * 0.5 * (0.9  * circle(vUv,circleRadius-circleWidth));
+
+    // undercurrent relative velocity
+    float t1 = uTime * -0.05;
+    // river relative velocity
+    float t2 = uTime * 0.001;
+    // pollution relative velocity
+    float t3 = uTime * 0.1;
+    vec2 q = p + t1;
+    float s = fbm(p + t3);
+    float r = fbm(p + t2 + s);
+    // so this is where is ressembles the canonical quilez technique
+    color += fbm(q + r);
+    // bump up brightness a smidgen
+    color += 0.25;
+    color.r +=  s + 0.08;
+    // note that r here isn't red, it's river as modulated by undercurrent
+    color.b += r + 0.2;
+    // color.r = clamp(color.r,0.1,0.9);
+    color.b = clamp(color.b,0.1,0.5);
+    // pollution as opposite of undercurrent color (couldnt use q without more operations)
+    color.g += s/1.5;
+    // color.g = clamp(color.g,color.b,0.8);
+    color.r += 1.0;
+    color.g += 0.2 * 1.0;
+    // color.g += 0.2 * slashA(st, 0.8,0.2);
+    // color.b += slashA(st, 0.12,0.2) - slashA(st, 0.07,0.2);
+    // color.g -= 0.2 * ( slashA(st, 0.12,0.2) - slashA(st, 0.07,0.2));
+
     gl_FragColor = vec4(color,1.0);
+    // vec3 color = vec3(1.0,1.0,1.0);
+    // gl_FragColor = vec4(color,1.0);
 }

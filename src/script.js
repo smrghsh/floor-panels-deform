@@ -67,8 +67,8 @@ const testMaterial = new THREE.ShaderMaterial({
 
 // const particles = new THREE.Points(particlesGeometry, testMaterial)
 // scene.add(particles)
-var xRows = 23.0
-var zRows = 23.0
+var xRows = 61.0
+var zRows = 61.0
 var spacing = 0.1;
 
 const planeGeometry = new THREE.PlaneGeometry()
@@ -87,19 +87,26 @@ const joshdreamMaterial = new THREE.ShaderMaterial({
     depthWrite: false,
     transparent: true,
     alphaTest: 0.5,
+    side: THREE.DoubleSide
     // sizeAttentuation: true,
     // blending: THREE.AdditiveBlending
 })
 
-for(let xRow = 0; xRow < xRows; xRow++ ){
-    for(let zRow = 0; zRow < zRows; zRow++){
-        const p = new THREE.Mesh(planeGeometry,joshdreamMaterial)
-        p.rotation.x -= Math.PI/2
-        p.position.x += xRow + xRow*spacing;
-        p.position.z += zRow + zRow*spacing;;
-        scene.add(p)
+var sheets = 3;
+
+for ( let i = 0; i < sheets; i++){
+    for(let xRow = 0; xRow < xRows; xRow++ ){
+        for(let zRow = 0; zRow < zRows; zRow++){
+            const p = new THREE.Mesh(planeGeometry,joshdreamMaterial)
+            p.rotation.x -= Math.PI/2
+            p.position.x += xRow + xRow*spacing + 10.0 * Math.random() + 3.0;
+            p.position.z += zRow + zRow*spacing + 20.0 + 0.0 * Math.random();
+            p.position.y -=  i * 10.0;
+            scene.add(p)
+        }
     }
 }
+
 
 
 
@@ -133,7 +140,7 @@ const sizes = {
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 800)
 camera.position.x = 30
 camera.position.y = 20
 camera.lookAt(30,0,30)

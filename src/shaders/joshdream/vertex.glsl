@@ -10,6 +10,7 @@ varying vec3 vPosition;
 float map(float value, float min1, float max1, float min2, float max2) {
   return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 }
+
 float random (in vec2 st) {
         return fract(sin(dot(st.xy,
         vec2(12.9898,78.233)))*
@@ -65,12 +66,14 @@ void main() {
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
     //new code
     vec4 p = modelPosition;
-
-    p.y += 2.0 * sin(p.x * 2.0 * PI/ uXRows);
-    p.y += 0.5 * cos(p.z * 2.0 * PI/ uYRows);
+    float t = uTime;
+    p.y += 2.0 * sin(t + p.x * 2.0 * PI/ uXRows);
+    p.y += 0.5 * cos(t + p.z * 2.0 * PI/ uYRows);
     vec3 center = vec3(uXRows/2.0,p.y,uYRows/2.0);
-    p.z -=  .5 * sin(p.x * 2.0 * PI/ uXRows);
-    p.x += 0.5 * cos(p.z * 2.0 * PI/ uYRows);
+    p.z -= 0.5 * sin(-0.5 * t + p.x * 2.0 * PI/ uXRows);
+    p.x += 0.5 * cos(0.5 * t + p.z * 2.0 * PI/ uYRows);
+    
+    
     vec4 viewPosition = viewMatrix * p;
     vec4 projectedPosition = projectionMatrix * viewPosition;
     gl_Position = projectedPosition;
