@@ -22,7 +22,7 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
-scene.background = new THREE.Color('black')
+scene.background = new THREE.Color('white')
 scene.add(new THREE.AxesHelper())
 
 // //buffer
@@ -69,7 +69,7 @@ const testMaterial = new THREE.ShaderMaterial({
 // scene.add(particles)
 var xRows = 61.0
 var zRows = 61.0
-var spacing = 0.1;
+var spacing = 0.2;
 
 const planeGeometry = new THREE.PlaneGeometry()
 const joshdreamMaterial = new THREE.ShaderMaterial({
@@ -99,8 +99,10 @@ for ( let i = 0; i < sheets; i++){
         for(let zRow = 0; zRow < zRows; zRow++){
             const p = new THREE.Mesh(planeGeometry,joshdreamMaterial)
             p.rotation.x -= Math.PI/2
-            p.position.x += xRow + xRow*spacing + 10.0 * Math.random() + 3.0;
-            p.position.z += zRow + zRow*spacing + 20.0 + 0.0 * Math.random();
+            p.position.x += xRow + xRow*spacing;
+            p.position.z += zRow + zRow*spacing;
+            // p.position.x += xRow + xRow*spacing + 10.0 * Math.random() + 3.0;
+            // p.position.z += zRow + zRow*spacing + 20.0 + 0.0 * Math.random();
             p.position.y -=  i * 10.0;
             scene.add(p)
         }
