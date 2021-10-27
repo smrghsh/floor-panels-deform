@@ -67,11 +67,12 @@ const testMaterial = new THREE.ShaderMaterial({
 
 // const particles = new THREE.Points(particlesGeometry, testMaterial)
 // scene.add(particles)
-var xRows = 61.0
-var zRows = 61.0
+var xRows = 20.0
+var zRows = 20.0
 var spacing = 0.2;
 
 const planeGeometry = new THREE.PlaneGeometry()
+const cubeGeometry = new THREE.SphereGeometry()
 const joshdreamMaterial = new THREE.ShaderMaterial({
     vertexShader: joshdreamVertexShader,
     fragmentShader: joshdreamFragmentShader,
@@ -92,12 +93,12 @@ const joshdreamMaterial = new THREE.ShaderMaterial({
     // blending: THREE.AdditiveBlending
 })
 
-var sheets = 3;
+var sheets = 1;
 
 for ( let i = 0; i < sheets; i++){
     for(let xRow = 0; xRow < xRows; xRow++ ){
         for(let zRow = 0; zRow < zRows; zRow++){
-            const p = new THREE.Mesh(planeGeometry,joshdreamMaterial)
+            const p = new THREE.Mesh(Math.random() > 0.6 ? cubeGeometry : planeGeometry,joshdreamMaterial)
             p.rotation.x -= Math.PI/2
             p.position.x += xRow + xRow*spacing;
             p.position.z += zRow + zRow*spacing;
